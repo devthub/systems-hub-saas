@@ -1,7 +1,7 @@
 'use server';
 
 import UserService from '@/lib/services/user/user-service';
-import { RegisterFormValues, registerSchema } from '@/lib/validation-schemas/register-schema';
+import { RegisterFormValues, registerSchema } from '@/schemas/register-schema';
 
 export default async function registerNewUser(formData: FormData) {
   const username = formData.get('username') as string;

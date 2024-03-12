@@ -140,7 +140,7 @@ export default function Navbar() {
                 fontWeight={600}
                 color={'white'}
                 bg={'#80bC00'}
-                href={'/auth/signin'}
+                href={'/signin'}
                 _hover={{
                   bg: '#99c932',
                 }}

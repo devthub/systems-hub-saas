@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-import { onlyOneWord } from '../utils/common';
+import { onlyOneWord } from '../lib/utils/common';
 
 export const registerSchema = yup.object().shape({
   username: yup

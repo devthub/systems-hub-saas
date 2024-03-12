@@ -22,7 +22,7 @@ import { useState, useTransition } from 'react';
 
 import { CustomInputFormControl } from '@/components/core/custom-form-controls/FormControls';
 import { useAppContext } from '@/lib/contexts/App.context';
-import { RegisterFormValues, registerInitialValues, registerSchema } from '@/lib/validation-schemas/register-schema';
+import { RegisterFormValues, registerInitialValues, registerSchema } from '@/schemas/register-schema';
 import registerNewUser from '@/server-actions/user/register-new-user';
 import { IFormikOnSubmitFn } from '@/types/formik-helpers';
 
