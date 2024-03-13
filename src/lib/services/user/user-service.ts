@@ -29,10 +29,10 @@ const authenticate = async ({ usernameOrEmail, password, otpCode }: LoginFormVal
     throw new Error('Invalid credentials!');
   }
 
-  // const isOtpCodeVerified = await userExists.verifyOtp(otpCode);
-  // if (!isOtpCodeVerified) {
-  //   throw new Error('Invalid/Expired code!');
-  // }
+  const isOtpCodeVerified = await userExists.verifyOtp(otpCode);
+  if (!isOtpCodeVerified) {
+    throw new Error('Invalid/Expired code!');
+  }
 
   await userExists.save();
 

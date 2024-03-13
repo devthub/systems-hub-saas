@@ -6,16 +6,16 @@ import dbConnect from '@/lib/config/db-connect';
 import HttpException, { HttpCode, ReasonPhrase } from '@/lib/utils/http-exceptions';
 import UserModel from '@/models/User.model';
 import { UserOTP } from '@/types/user';
-import { createOtpHTMLEmail } from './contents';
+import { createOtpHTMLEmail, createOTPRawEmail } from './contents';
 
 const HOUR_IN_MS = 3600000;
 // const TEN_SECONDS = 10000;
 
 export async function POST(req: NextRequest) {
-  const { usernameOrEmail, password } = await req.json();
-
   try {
     await dbConnect();
+
+    const { usernameOrEmail, password } = await req.json();
 
     const userExists = await UserModel.findOne({
       $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
@@ -42,26 +42,29 @@ export async function POST(req: NextRequest) {
       expires: new Date(Date.now() + HOUR_IN_MS), //1 hour
     };
 
-    const rawText = createOtpHTMLEmail(otpCode, '1');
-    const htmlContent = createOtpHTMLEmail(otpCode, '1');
-
-    await transporter.sendMail({
-      from: process.env.NEXT_PUBLIC_SMTP_USER,
-      to: userExists?.email,
-      bcc: 'wendelle@transformhub.com.au',
-      subject: 'Your One-Time Password (OTP) Code',
-      text: rawText,
-      html: htmlContent,
-    });
-
     userExists.otp = newOtp;
-    await userExists.save();
+
+    const rawText = createOTPRawEmail(otpCode);
+    const htmlContent = createOtpHTMLEmail(otpCode);
+
+    const [user] = await Promise.all([
+      userExists.save(),
+      transporter.sendMail({
+        from: process.env.NEXT_PUBLIC_SMTP_USER,
+        to: userExists?.email,
+        bcc: 'wendelle@transformhub.com.au',
+        subject: 'Your One-Time Password (OTP) Code',
+        text: rawText,
+        html: htmlContent,
+      }),
+    ]);
 
     return NextResponse.json(
       {
         ok: true,
         status: HttpCode.OK,
         message: 'Please check the verification code we sent to your email.',
+        user: JSON.parse(JSON.stringify(user)),
       },
       { status: HttpCode.OK }
     );
@@ -73,6 +76,7 @@ export async function POST(req: NextRequest) {
           ok: false,
           status: error.status,
           message: error.message,
+          user: null,
         },
         { status: error.status }
       );
@@ -83,6 +87,7 @@ export async function POST(req: NextRequest) {
         status: HttpCode.INTERNAL_SERVER_ERROR,
         ok: false,
         message: `${ReasonPhrase.INTERNAL_SERVER_ERROR}: ${(error as { message: string }).message} `,
+        user: null,
       },
       { status: HttpCode.INTERNAL_SERVER_ERROR }
     );

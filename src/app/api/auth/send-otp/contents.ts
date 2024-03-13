@@ -14,7 +14,7 @@ Thanks,
 
 Systems Hub Team`;
 
-export const createOtpHTMLEmail = (otpCode: string, otpExpiry: string): string => `
+export const createOtpHTMLEmail = (otpCode: string): string => `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,7 +40,6 @@ export const createOtpHTMLEmail = (otpCode: string, otpExpiry: string): string =
     <p>Hi,</p>
     <p>You've requested a One-Time Password (OTP) for authentication. Use it to authenticate:</p>
     <p style="font-size: 18px; font-weight: bold;">OTP Code: ${otpCode}</p>
-    <p>This code is valid for <span class="important">**${otpExpiry} hour</span>** only.</p>
     
     <p>If you didn't request an OTP or have security concerns, please contact our support team immediately.</p>
     <p>Thanks,</p>
