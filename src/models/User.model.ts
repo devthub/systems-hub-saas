@@ -15,16 +15,14 @@ const UserSchema: Schema<UserDocument> = new Schema(
   {
     name: String,
     username: { type: String, unique: true, required: true },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
+    email: { type: String, unique: true, required: true, lowercase: true },
     password: { type: String, required: true, select: false },
     hash: String,
     salt: String,
+    imgUrl: { type: String },
     role: { type: String, default: 'basic' },
     stripeCustomerId: String,
+    otp: { code: String, expires: Date },
   },
   { timestamps: true }
 );
